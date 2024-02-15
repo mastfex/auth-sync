@@ -15,7 +15,7 @@ if ($controllerName == 'auth') {
     $controller = new UsuarioController();
 
     if ($method == 'POST') {
-
+        
         switch ($action) {
             case 'token':
                 $body = file_get_contents('php://input');
@@ -24,8 +24,17 @@ if ($controllerName == 'auth') {
 
             case 'validar':
                 $headers = getallheaders();
-                $token = $headers["Authorization"] ?? '';
-                $controller->validarToken($token);
+                $authHeader = $headers["Authorization"] ?? '';
+                $token = '';
+
+                if (strpos($authHeader, 'Bearer ') === 0) {
+                    $token = substr($authHeader, 7);
+                    $controller->validarToken($token);
+                }else{
+                    header('HTTP/1.1 401 Unauthorized');
+                    exit;
+                }
+                
             break;
         }
 

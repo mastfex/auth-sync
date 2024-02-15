@@ -1,10 +1,10 @@
 <?php
 
 require_once 'conexion/ConexionMySQL.php';
-require_once 'entidad/Usuario.php';
+require_once 'entidad/Propiedad.php';
 
-class UsuarioDAO{
-
+class PropiedadDAO
+{
     private $conexion;
 
     public function __construct()
@@ -17,19 +17,19 @@ class UsuarioDAO{
 		}
     }
 
-    public function buscarPorUsername($usuario) {
-        
-        $consulta = "SELECT * FROM usuario WHERE usuario = ?";
+    public function obtenerPropiedad($key)
+    {
+        $consulta = "SELECT p.value FROM propiedad p WHERE p.nombre = ?";
 
         try{
 
             $stmt = $this->conexion->prepare($consulta);
-            $stmt->bindParam(1, $usuario);
+            $stmt->bindParam(1, $key);
             $stmt->execute();
 
             while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 
-                return new Usuario($fila['id'], $fila['usuario'], $fila['password'] );
+                return new Propiedad($fila['id'], $fila['nombre'], $fila['value'] );
 
             }
         
@@ -44,7 +44,6 @@ class UsuarioDAO{
 		}	
 
         return null;
+
     }
-
-
 }
