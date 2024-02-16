@@ -11,6 +11,8 @@ use OpenSSLAsymmetricKey;
 use OpenSSLCertificate;
 use stdClass;
 use UnexpectedValueException;
+require_once 'ExpiredException.php';
+use Firebase\JWT\ExpiredException;
 
 /**
  * JSON Web Token implementation, based on this spec:

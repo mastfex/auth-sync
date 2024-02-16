@@ -48,6 +48,8 @@ class UsuarioApp{
             try {
                 $decoded = JWT::decode($token, new Key($prop, 'HS256'));
                 return true;
+            }catch (Firebase\JWT\ExpiredException $e) {
+                header('HTTP/1.1 401 Unauthorized');
             } catch (Exception $e) {
                 header('HTTP/1.1 401 Unauthorized');
                 error_log("Error al validar token:".$e->getMessage());

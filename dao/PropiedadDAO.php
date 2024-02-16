@@ -19,7 +19,7 @@ class PropiedadDAO
 
     public function obtenerPropiedad($key)
     {
-        $consulta = "SELECT p.value FROM propiedad p WHERE p.nombre = ?";
+        $consulta = "SELECT * FROM propiedad p WHERE p.nombre = ?";
 
         try{
 
