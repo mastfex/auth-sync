@@ -41,24 +41,30 @@ class UsuarioApp{
     }
 
     public function validarToken($token) {
-        $propiedad = new PropiedadDAO();
-        $prop = $propiedad->obtenerPropiedad('PRIVATE_KEY')->getValue();
-
-        if ($token) {
-            try {
-                $decoded = JWT::decode($token, new Key($prop, 'HS256'));
-                return true;
-            }catch (Firebase\JWT\ExpiredException $e) {
-                header('HTTP/1.1 401 Unauthorized');
-            } catch (Exception $e) {
-                header('HTTP/1.1 401 Unauthorized');
-                error_log("Error al validar token:".$e->getMessage());
-                return json_encode(["error" => "Acceso denegado: " . $e->getMessage()]);
-            }
-        } else {
+        if (empty($token)) {
             header('HTTP/1.1 401 Unauthorized');
             error_log("Error al validar token: Token no proporcionado");
             return json_encode(["error" => "Token no proporcionado"]);
+        }
+    
+        $propiedad = new PropiedadDAO();
+        $prop = $propiedad->obtenerPropiedad('PRIVATE_KEY')->getValue();
+    
+        try {
+            $decoded = JWT::decode($token, new Key($prop, 'HS256'));
+            return true;
+        } catch (Firebase\JWT\ExpiredException $e) {
+            header('HTTP/1.1 401 Unauthorized');
+            error_log("Token expirado: " . $e->getMessage());
+            return false;
+        } catch (\UnexpectedValueException $e) {
+            header('HTTP/1.1 401 Unauthorized');
+            error_log("Token inválido: " . $e->getMessage());
+            return false;
+        } catch (\Exception $e) {
+            header('HTTP/1.1 401 Unauthorized');
+            error_log("Error al validar token: " . $e->getMessage());
+            return false;
         }
     }
     
