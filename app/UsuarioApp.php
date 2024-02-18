@@ -41,6 +41,11 @@ class UsuarioApp{
     }
 
     public function validarToken($token) {
+
+        error_log("Token que llega: " . $token);
+
+        $token = preg_replace('/^Bearer\s/', '', $token);
+        
         if (empty($token)) {
             header('HTTP/1.1 401 Unauthorized');
             error_log("Error al validar token: Token no proporcionado");
