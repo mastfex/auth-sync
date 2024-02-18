@@ -17,11 +17,12 @@ class UsuarioApp{
         $usuarioDAO = new UsuarioDAO();
         $usuario = $usuarioDAO->buscarPorUsername($username);
         $prop = $propiedad->obtenerPropiedad('PRIVATE_KEY')->getValue();
+        $exp = $propiedad->obtenerPropiedad('EXP_TOKEN')->getValue();
 
         if ($usuario && $username == $usuario->getUsername() && password_verify($password, $usuario->getPassword())) {
             $payload = [
                 "iat" => time(),
-                "exp" => time() + (60*60), // Expira en 1 hora
+                "exp" => time() + ($exp), 
                 "uid" => $usuario->getId()
             ];
 
